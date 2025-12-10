@@ -1,10 +1,7 @@
 plugins {
     `kotlin-dsl`
-    alias(libs.plugins.spring.dependency.management)
 }
 
-group = "com.vincicent"
-version = "0.0.1-SNAPSHOT"
 description = "Chat app backend - notification module"
 
 repositories {
@@ -18,4 +15,5 @@ dependencies {
     implementation(libs.kotlin.gradle.plugin)
     implementation(libs.kotlin.allopen)
     implementation(libs.spring.boot.gradle.plugin)
+    implementation("io.spring.gradle:dependency-management-plugin:1.1.7")
 }

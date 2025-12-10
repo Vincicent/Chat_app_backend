@@ -9,4 +9,10 @@ pluginManagement {
 
 rootProject.name = "chatapp"
 
+enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
+
 include("app")
+include("user")
+include("chat")
+include("notification")
+include("common")

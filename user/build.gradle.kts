@@ -1,13 +1,11 @@
 plugins {
-	alias(libs.plugins.kotlin.jvm)
-	alias(libs.plugins.kotlin.spring)
-	alias(libs.plugins.spring.boot)
-	alias(libs.plugins.spring.dependency.management)
-	alias(libs.plugins.kotlin.jpa)
+    id("java-library")
+    id("chatapp.spring-boot-service")
+    kotlin("plugin.jpa")
 }
 
 group = "com.vincicent"
-version = "0.0.1-SNAPSHOT"
+version = "unspecified"
 description = "Chat app backend - user module"
 
 repositories {
@@ -17,7 +15,8 @@ repositories {
 }
 
 dependencies {
-	testImplementation(kotlin("test"))
+    implementation(projects.common)
+    testImplementation(kotlin("test"))
 }
 
 tasks.test {
