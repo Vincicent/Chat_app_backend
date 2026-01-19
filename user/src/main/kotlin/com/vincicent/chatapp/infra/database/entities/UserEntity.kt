@@ -32,7 +32,7 @@ class UserEntity(
     @Column(nullable = false)
     var hashedPassword: String,
     @Column(nullable = false)
-    var hasVerifiedEmail: Boolean,
+    var hasVerifiedEmail: Boolean = false,
     @CreationTimestamp
     var createdAt: Instant = Instant.now(),
     @UpdateTimestamp
