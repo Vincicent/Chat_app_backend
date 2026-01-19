@@ -1,4 +1,4 @@
-package com.vincicent.user.domain.model
+package com.vincicent.chatapp.domain.model
 
 import java.util.UUID
 

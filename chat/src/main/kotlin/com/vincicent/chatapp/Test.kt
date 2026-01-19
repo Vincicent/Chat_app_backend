@@ -1,4 +1,4 @@
-package com.vincicent.chat
+package com.vincicent.chatapp
 
 class Test {
 
