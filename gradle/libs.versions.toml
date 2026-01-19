@@ -46,7 +46,6 @@ kotlin-allopen = { module = "org.jetbrains.kotlin:kotlin-allopen", version.ref =
 
 # Database
 postgresql = { module = "org.postgresql:postgresql" }
-h2database = { module = "com.h2database:h2" }
 
 # HTTP
 okhttp = { module = "com.squareup.okhttp3:okhttp", version.ref = "okhttp" }
