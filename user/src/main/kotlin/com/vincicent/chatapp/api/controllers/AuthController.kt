@@ -8,16 +8,20 @@ import com.vincicent.chatapp.api.dto.UserDto
 import com.vincicent.chatapp.api.mappers.toAuthenticatedUserDto
 import com.vincicent.chatapp.api.mappers.toUserDto
 import com.vincicent.chatapp.service.auth.AuthService
+import com.vincicent.chatapp.service.auth.EmailVerificationService
 import jakarta.validation.Valid
+import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
 @RequestMapping("/api/auth")
 class AuthController(
-    private val authService: AuthService
+    private val authService: AuthService,
+    private val emailVerificationService: EmailVerificationService
 ) {
 
     @PostMapping("/register")
@@ -56,5 +60,12 @@ class AuthController(
     ) {
         authService
             .logout(body.refreshToken)
+    }
+
+    @GetMapping("/verify")
+    fun verifyEmail(
+        @RequestParam token: String
+    ) {
+        emailVerificationService.verifyEmail(token)
     }
 }

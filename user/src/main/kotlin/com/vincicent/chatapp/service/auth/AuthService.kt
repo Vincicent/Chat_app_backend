@@ -1,5 +1,6 @@
 package com.vincicent.chatapp.service.auth
 
+import com.vincicent.chatapp.domain.exception.EmailNotVerifiedException
 import com.vincicent.chatapp.domain.exception.InvalidCredentialsException
 import com.vincicent.chatapp.domain.exception.InvalidTokenException
 import com.vincicent.chatapp.domain.exception.UserAlreadyExistsException
@@ -25,12 +26,15 @@ import java.util.Base64
 class AuthService(
     private val userRepository: UserRepository,
     private val jwtService: JwtService,
+    private val emailVerificationService: EmailVerificationService,
     private val refreshTokenRepository: RefreshTokenRepository,
     private val passwordEncoder: PasswordEncoder
 ) {
+    @Transactional
     fun register(email: String, username: String, password: String): User {
+        val trimmedEmail = email.trim()
         val user = userRepository.findByEmailOrUsername(
-            email = email.trim(),
+            email = trimmedEmail,
             username = username.trim()
         )
 
@@ -38,13 +42,15 @@ class AuthService(
             throw UserAlreadyExistsException()
         }
 
-        val savedUser = userRepository.save(
+        val savedUser = userRepository.saveAndFlush(
             UserEntity(
-                email = email.trim(),
+                email = trimmedEmail,
                 username = username.trim(),
                 hashedPassword = passwordEncoder.encode(password)
             )
         ).toUser()
+
+        emailVerificationService.createVerificationToken(trimmedEmail)
 
         return savedUser
     }
@@ -60,7 +66,9 @@ class AuthService(
             throw InvalidCredentialsException()
         }
 
-        // TODO: Check for verified email
+        if(!user.hasVerifiedEmail) {
+            throw EmailNotVerifiedException()
+        }
 
         return user.id?.let { userId ->
             val accessToken = jwtService.generateAccessToken(userId)

@@ -1,5 +1,6 @@
 package com.vincicent.chatapp.api.exception_handling
 
+import com.vincicent.chatapp.domain.exception.EmailNotVerifiedException
 import com.vincicent.chatapp.domain.exception.EncodePasswordException
 import com.vincicent.chatapp.domain.exception.InvalidCredentialsException
 import com.vincicent.chatapp.domain.exception.InvalidTokenException
@@ -48,6 +49,15 @@ class AuthExceptionHandler {
         e: EncodePasswordException
     ) = mapOf(
         "code" to "ENCODE_FAILED",
+        "message" to e.message
+    )
+
+    @ExceptionHandler(EmailNotVerifiedException::class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    fun onEmailNotVerified(
+        e: EmailNotVerifiedException
+    ) = mapOf(
+        "code" to "EMAIL_NOT_VERIFIED",
         "message" to e.message
     )
 
