@@ -1,7 +1,10 @@
 package com.vincicent.chatapp.api.controllers
 
+import com.vincicent.chatapp.api.dto.AuthenticatedUserDto
+import com.vincicent.chatapp.api.dto.LoginRequest
 import com.vincicent.chatapp.api.dto.RegisterRequest
 import com.vincicent.chatapp.api.dto.UserDto
+import com.vincicent.chatapp.api.mappers.toAuthenticatedUserDto
 import com.vincicent.chatapp.api.mappers.toUserDto
 import com.vincicent.chatapp.service.auth.AuthService
 import jakarta.validation.Valid
@@ -25,5 +28,15 @@ class AuthController(
             username = body.username,
             password = body.password
         ).toUserDto()
+    }
+
+    @PostMapping("/login")
+    fun login(
+        @RequestBody body: LoginRequest
+    ): AuthenticatedUserDto {
+        return authService.login(
+            email = body.email,
+            password = body.password
+        ).toAuthenticatedUserDto()
     }
 }
