@@ -1,14 +1,18 @@
 package com.vincicent.chatapp.api.controllers
 
 import com.vincicent.chatapp.api.dto.AuthenticatedUserDto
+import com.vincicent.chatapp.api.dto.ChangePasswordRequest
+import com.vincicent.chatapp.api.dto.EmailRequest
 import com.vincicent.chatapp.api.dto.LoginRequest
 import com.vincicent.chatapp.api.dto.RefreshRequest
 import com.vincicent.chatapp.api.dto.RegisterRequest
+import com.vincicent.chatapp.api.dto.ResetPasswordRequest
 import com.vincicent.chatapp.api.dto.UserDto
 import com.vincicent.chatapp.api.mappers.toAuthenticatedUserDto
 import com.vincicent.chatapp.api.mappers.toUserDto
 import com.vincicent.chatapp.service.AuthService
 import com.vincicent.chatapp.service.EmailVerificationService
+import com.vincicent.chatapp.service.PasswordResetService
 import jakarta.validation.Valid
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
@@ -21,7 +25,8 @@ import org.springframework.web.bind.annotation.RestController
 @RequestMapping("/api/auth")
 class AuthController(
     private val authService: AuthService,
-    private val emailVerificationService: EmailVerificationService
+    private val emailVerificationService: EmailVerificationService,
+    private val passwordResetService: PasswordResetService
 ) {
 
     @PostMapping("/register")
@@ -67,5 +72,30 @@ class AuthController(
         @RequestParam token: String
     ) {
         emailVerificationService.verifyEmail(token)
+    }
+
+
+    @PostMapping("/forgot-password")
+    fun forgotPassword(
+        @Valid @RequestBody body: EmailRequest
+    ) {
+        passwordResetService.requestPasswordReset(body.email)
+    }
+
+    @PostMapping("/reset-password")
+    fun resetPassword(
+        @Valid @RequestBody body: ResetPasswordRequest
+    ) {
+        passwordResetService.resetPassword(
+            token = body.token,
+            newPassword = body.newPassword
+        )
+    }
+
+    @PostMapping("/change-password")
+    fun changePassword(
+        @Valid @RequestBody body: ChangePasswordRequest
+    ) {
+        // TODO: Extract request user ID and call service
     }
 }

@@ -4,6 +4,7 @@ import com.vincicent.chatapp.domain.exception.EmailNotVerifiedException
 import com.vincicent.chatapp.domain.exception.EncodePasswordException
 import com.vincicent.chatapp.domain.exception.InvalidCredentialsException
 import com.vincicent.chatapp.domain.exception.InvalidTokenException
+import com.vincicent.chatapp.domain.exception.SamePasswordException
 import com.vincicent.chatapp.domain.exception.UserAlreadyExistsException
 import com.vincicent.chatapp.domain.exception.UserNotFoundException
 import org.springframework.http.HttpStatus
@@ -49,6 +50,15 @@ class AuthExceptionHandler {
         e: EncodePasswordException
     ) = mapOf(
         "code" to "ENCODE_FAILED",
+        "message" to e.message
+    )
+
+    @ExceptionHandler(SamePasswordException::class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    fun onSamePassword(
+        e: SamePasswordException
+    ) = mapOf(
+        "code" to "SAME_PASSWORD",
         "message" to e.message
     )
 
