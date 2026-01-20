@@ -2,6 +2,7 @@ package com.vincicent.chatapp.api.controllers
 
 import com.vincicent.chatapp.api.dto.AuthenticatedUserDto
 import com.vincicent.chatapp.api.dto.LoginRequest
+import com.vincicent.chatapp.api.dto.RefreshRequest
 import com.vincicent.chatapp.api.dto.RegisterRequest
 import com.vincicent.chatapp.api.dto.UserDto
 import com.vincicent.chatapp.api.mappers.toAuthenticatedUserDto
@@ -38,5 +39,14 @@ class AuthController(
             email = body.email,
             password = body.password
         ).toAuthenticatedUserDto()
+    }
+
+    @PostMapping("/refresh")
+    fun refresh(
+        @RequestBody body: RefreshRequest
+    ): AuthenticatedUserDto {
+        return authService
+            .refresh(body.refreshToken)
+            .toAuthenticatedUserDto()
     }
 }
