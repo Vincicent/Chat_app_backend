@@ -7,8 +7,8 @@ import com.vincicent.chatapp.api.dto.RegisterRequest
 import com.vincicent.chatapp.api.dto.UserDto
 import com.vincicent.chatapp.api.mappers.toAuthenticatedUserDto
 import com.vincicent.chatapp.api.mappers.toUserDto
-import com.vincicent.chatapp.service.auth.AuthService
-import com.vincicent.chatapp.service.auth.EmailVerificationService
+import com.vincicent.chatapp.service.AuthService
+import com.vincicent.chatapp.service.EmailVerificationService
 import jakarta.validation.Valid
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping

@@ -1,4 +1,4 @@
-package com.vincicent.chatapp.service.auth
+package com.vincicent.chatapp.service
 
 import com.vincicent.chatapp.domain.exception.EmailNotVerifiedException
 import com.vincicent.chatapp.domain.exception.InvalidCredentialsException
