@@ -3,6 +3,10 @@ spring:
     hibernate:
       ddl-auto: validate
 
+  mail:
+    host: smtp.mailgun.org
+    username: postmaster@sandbox409b0c2668d045228b8b5d0892bb24ba.mailgun.org
+
 jwt:
   expiration-minutes: 15
 
@@ -10,10 +14,8 @@ nginx:
   require-proxy: true
 
 chatapp:
+  email:
+    url: "http://TODO:8080"
   rate-limit:
     ip:
       apply-limit: true
-
-  mail:
-    host: smtp.mailgun.org
-    username: postmaster@sandbox409b0c2668d045228b8b5d0892bb24ba.mailgun.org

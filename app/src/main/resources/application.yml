@@ -78,6 +78,7 @@ jwt:
 
 chatapp:
   email:
+    from: mail@chatapp.com
     verification:
       expiry-hours: 24
     reset-password:
