@@ -8,11 +8,13 @@ import com.vincicent.chatapp.domain.exception.UserNotFoundException
 import com.vincicent.chatapp.domain.model.AuthenticatedUser
 import com.vincicent.chatapp.domain.model.User
 import com.vincicent.chatapp.domain.type.UserId
+import com.vincicent.chatapp.events.user.UserEvent
 import com.vincicent.chatapp.infra.database.entities.RefreshTokenEntity
 import com.vincicent.chatapp.infra.database.entities.UserEntity
 import com.vincicent.chatapp.infra.database.mappers.toUser
 import com.vincicent.chatapp.infra.database.repositories.RefreshTokenRepository
 import com.vincicent.chatapp.infra.database.repositories.UserRepository
+import com.vincicent.chatapp.infra.message_queue.EventPublisher
 import com.vincicent.chatapp.infra.security.PasswordEncoder
 import jakarta.transaction.Transactional
 import org.springframework.data.repository.findByIdOrNull
@@ -28,7 +30,8 @@ class AuthService(
     private val jwtService: JwtService,
     private val emailVerificationService: EmailVerificationService,
     private val refreshTokenRepository: RefreshTokenRepository,
-    private val passwordEncoder: PasswordEncoder
+    private val passwordEncoder: PasswordEncoder,
+    private val eventPublisher: EventPublisher
 ) {
     @Transactional
     fun register(email: String, username: String, password: String): User {
@@ -50,7 +53,16 @@ class AuthService(
             )
         ).toUser()
 
-        emailVerificationService.createVerificationToken(trimmedEmail)
+        val token = emailVerificationService.createVerificationToken(trimmedEmail)
+
+        eventPublisher.publish(
+            event = UserEvent.Created(
+                userId = savedUser.id,
+                email = savedUser.email,
+                username = savedUser.username,
+                verificationToken = token.token
+            )
+        )
 
         return savedUser
     }

@@ -3,11 +3,13 @@ package com.vincicent.chatapp.service
 import com.vincicent.chatapp.domain.exception.InvalidTokenException
 import com.vincicent.chatapp.domain.exception.UserNotFoundException
 import com.vincicent.chatapp.domain.model.EmailVerificationToken
+import com.vincicent.chatapp.events.user.UserEvent
 import com.vincicent.chatapp.infra.database.entities.EmailVerificationTokenEntity
 import com.vincicent.chatapp.infra.database.mappers.toEmailVerificationToken
 import com.vincicent.chatapp.infra.database.mappers.toUser
 import com.vincicent.chatapp.infra.database.repositories.EmailVerificationTokenRepository
 import com.vincicent.chatapp.infra.database.repositories.UserRepository
+import com.vincicent.chatapp.infra.message_queue.EventPublisher
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Service
@@ -19,10 +21,25 @@ import java.time.temporal.ChronoUnit
 class EmailVerificationService(
     private val emailVerificationTokenRepository: EmailVerificationTokenRepository,
     private val userRepository: UserRepository,
-    @param:Value("\${chatapp.email.verification.expiry-hours}") private val expiryHours: Long
+    @param:Value("\${chatapp.email.verification.expiry-hours}") private val expiryHours: Long,
+    private val eventPublisher: EventPublisher
 ) {
+    @Transactional
     fun resendVerificationEmail(email: String) {
-        // TODO: Trigger resend
+        val token = createVerificationToken(email)
+
+        if (token.user.hasEmailVerified) {
+            return
+        }
+
+        eventPublisher.publish(
+            event = UserEvent.RequestResendVerification(
+                userId = token.user.id,
+                email = token.user.email,
+                username = token.user.username,
+                verificationToken = token.token
+            )
+        )
     }
 
     @Transactional
