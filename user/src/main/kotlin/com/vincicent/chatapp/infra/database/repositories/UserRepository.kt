@@ -1,6 +1,6 @@
 package com.vincicent.chatapp.infra.database.repositories
 
-import com.vincicent.chatapp.domain.model.UserId
+import com.vincicent.chatapp.domain.type.UserId
 import com.vincicent.chatapp.infra.database.entities.UserEntity
 import org.springframework.data.jpa.repository.JpaRepository
 

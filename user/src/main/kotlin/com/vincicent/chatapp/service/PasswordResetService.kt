@@ -4,7 +4,7 @@ import com.vincicent.chatapp.domain.exception.InvalidCredentialsException
 import com.vincicent.chatapp.domain.exception.InvalidTokenException
 import com.vincicent.chatapp.domain.exception.SamePasswordException
 import com.vincicent.chatapp.domain.exception.UserNotFoundException
-import com.vincicent.chatapp.domain.model.UserId
+import com.vincicent.chatapp.domain.type.UserId
 import com.vincicent.chatapp.infra.database.entities.PasswordResetTokenEntity
 import com.vincicent.chatapp.infra.database.repositories.PasswordResetTokenRepository
 import com.vincicent.chatapp.infra.database.repositories.RefreshTokenRepository

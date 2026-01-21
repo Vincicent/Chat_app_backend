@@ -1,6 +1,6 @@
 package com.vincicent.chatapp.infra.database.entities
 
-import com.vincicent.chatapp.domain.model.UserId
+import com.vincicent.chatapp.domain.type.UserId
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.GeneratedValue

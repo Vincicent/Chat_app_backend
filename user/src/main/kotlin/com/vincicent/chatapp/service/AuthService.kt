@@ -7,7 +7,7 @@ import com.vincicent.chatapp.domain.exception.UserAlreadyExistsException
 import com.vincicent.chatapp.domain.exception.UserNotFoundException
 import com.vincicent.chatapp.domain.model.AuthenticatedUser
 import com.vincicent.chatapp.domain.model.User
-import com.vincicent.chatapp.domain.model.UserId
+import com.vincicent.chatapp.domain.type.UserId
 import com.vincicent.chatapp.infra.database.entities.RefreshTokenEntity
 import com.vincicent.chatapp.infra.database.entities.UserEntity
 import com.vincicent.chatapp.infra.database.mappers.toUser

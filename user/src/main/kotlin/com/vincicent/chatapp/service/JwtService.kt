@@ -1,7 +1,7 @@
 package com.vincicent.chatapp.service
 
 import com.vincicent.chatapp.domain.exception.InvalidTokenException
-import com.vincicent.chatapp.domain.model.UserId
+import com.vincicent.chatapp.domain.type.UserId
 import io.jsonwebtoken.Claims
 import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.security.Keys
