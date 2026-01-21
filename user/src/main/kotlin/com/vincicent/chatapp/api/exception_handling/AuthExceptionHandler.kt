@@ -5,6 +5,7 @@ import com.vincicent.chatapp.domain.exception.EncodePasswordException
 import com.vincicent.chatapp.domain.exception.InvalidCredentialsException
 import com.vincicent.chatapp.domain.exception.InvalidTokenException
 import com.vincicent.chatapp.domain.exception.SamePasswordException
+import com.vincicent.chatapp.domain.exception.UnauthorizedException
 import com.vincicent.chatapp.domain.exception.UserAlreadyExistsException
 import com.vincicent.chatapp.domain.exception.UserNotFoundException
 import com.vincicent.chatapp.domain.model.RateLimitException
@@ -63,6 +64,14 @@ class AuthExceptionHandler {
         "message" to e.message
     )
 
+    @ExceptionHandler(UnauthorizedException::class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    fun onUnauthorized(
+        e: UnauthorizedException
+    ) = mapOf(
+        "code" to "UNAUTHORIZED",
+        "message" to e.message
+    )
 
     @ExceptionHandler(SamePasswordException::class)
     @ResponseStatus(HttpStatus.CONFLICT)

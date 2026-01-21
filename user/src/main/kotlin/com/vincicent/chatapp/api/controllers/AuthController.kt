@@ -11,6 +11,7 @@ import com.vincicent.chatapp.api.dto.ResetPasswordRequest
 import com.vincicent.chatapp.api.dto.UserDto
 import com.vincicent.chatapp.api.mappers.toAuthenticatedUserDto
 import com.vincicent.chatapp.api.mappers.toUserDto
+import com.vincicent.chatapp.api.util.requestUserId
 import com.vincicent.chatapp.infra.rate_limiting.EmailRateLimiter
 import com.vincicent.chatapp.service.AuthService
 import com.vincicent.chatapp.service.EmailVerificationService
@@ -120,7 +121,11 @@ class AuthController(
     fun changePassword(
         @Valid @RequestBody body: ChangePasswordRequest
     ) {
-        // TODO: Extract request user ID and call service
+        passwordResetService.changePassword(
+            userId = requestUserId,
+            oldPassword = body.oldPassword,
+            newPassword = body.newPassword
+        )
     }
 
     @PostMapping("/resend-verification")
