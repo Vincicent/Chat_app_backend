@@ -12,4 +12,4 @@ nginx:
 chatapp:
   rate-limit:
     ip:
-      apply-limit: true
+      apply-limit: false
