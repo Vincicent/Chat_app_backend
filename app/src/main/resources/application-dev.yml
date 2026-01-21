@@ -13,3 +13,7 @@ chatapp:
   rate-limit:
     ip:
       apply-limit: false
+
+  mail:
+    host: smtp.mailgun.org
+    username: postmaster@sandbox409b0c2668d045228b8b5d0892bb24ba.mailgun.org
