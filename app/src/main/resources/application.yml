@@ -42,12 +42,12 @@ spring:
         show_sql: true
 
   rabbitmq:
-    host: seal.lmq.cloudamqp.com
+    host: kebnekaise.lmq.cloudamqp.com
     password: ${RABBITMQ_PASSWORD}
-    username: iaetkiyn
+    username: avfblcte
     ssl:
       enabled: true
-    virtual-host: iaetkiyn
+    virtual-host: avfblcte
     listener:
       simple:
         acknowledge-mode: auto
