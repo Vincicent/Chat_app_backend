@@ -10,6 +10,7 @@ import com.vincicent.chatapp.api.dto.ResetPasswordRequest
 import com.vincicent.chatapp.api.dto.UserDto
 import com.vincicent.chatapp.api.mappers.toAuthenticatedUserDto
 import com.vincicent.chatapp.api.mappers.toUserDto
+import com.vincicent.chatapp.infra.rate_limiting.EmailRateLimiter
 import com.vincicent.chatapp.service.AuthService
 import com.vincicent.chatapp.service.EmailVerificationService
 import com.vincicent.chatapp.service.PasswordResetService
@@ -26,7 +27,8 @@ import org.springframework.web.bind.annotation.RestController
 class AuthController(
     private val authService: AuthService,
     private val emailVerificationService: EmailVerificationService,
-    private val passwordResetService: PasswordResetService
+    private val passwordResetService: PasswordResetService,
+    private val emailRateLimiter: EmailRateLimiter
 ) {
 
     @PostMapping("/register")
@@ -97,5 +99,16 @@ class AuthController(
         @Valid @RequestBody body: ChangePasswordRequest
     ) {
         // TODO: Extract request user ID and call service
+    }
+
+    @PostMapping("/resend-verification")
+    fun resendVerification(
+        @Valid @RequestBody body: EmailRequest
+    ) {
+        emailRateLimiter.withRateLimit(
+            email = body.email
+        ) {
+            emailVerificationService.resendVerificationEmail(body.email)
+        }
     }
 }

@@ -21,6 +21,9 @@ class EmailVerificationService(
     private val userRepository: UserRepository,
     @param:Value("\${chatapp.email.verification.expiry-hours}") private val expiryHours: Long
 ) {
+    fun resendVerificationEmail(email: String) {
+        // TODO: Trigger resend
+    }
 
     @Transactional
     fun createVerificationToken(email: String): EmailVerificationToken {

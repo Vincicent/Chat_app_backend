@@ -7,6 +7,7 @@ import com.vincicent.chatapp.domain.exception.InvalidTokenException
 import com.vincicent.chatapp.domain.exception.SamePasswordException
 import com.vincicent.chatapp.domain.exception.UserAlreadyExistsException
 import com.vincicent.chatapp.domain.exception.UserNotFoundException
+import com.vincicent.chatapp.domain.model.RateLimitException
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.MethodArgumentNotValidException
@@ -52,6 +53,16 @@ class AuthExceptionHandler {
         "code" to "ENCODE_FAILED",
         "message" to e.message
     )
+
+    @ExceptionHandler(RateLimitException::class)
+    @ResponseStatus(HttpStatus.TOO_MANY_REQUESTS)
+    fun onRateLimitExceeded(
+        e: RateLimitException
+    ) = mapOf(
+        "code" to "RATE_LIMIT_EXCEEDED",
+        "message" to e.message
+    )
+
 
     @ExceptionHandler(SamePasswordException::class)
     @ResponseStatus(HttpStatus.CONFLICT)
