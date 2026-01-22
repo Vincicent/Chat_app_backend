@@ -1,5 +1,6 @@
 package com.vincicent.chatapp.api.exception_handling
 
+import com.vincicent.chatapp.domain.exception.ChatNotFoundException
 import com.vincicent.chatapp.domain.exception.ChatParticipantNotFoundException
 import com.vincicent.chatapp.domain.exception.InvalidChatSizeException
 import com.vincicent.chatapp.domain.exception.UnauthorizedException
@@ -28,6 +29,15 @@ class ExceptionHandler {
         e: InvalidChatSizeException
     ) = mapOf(
         "code" to "BAD_REQUEST",
+        "message" to e.message
+    )
+
+    @ExceptionHandler(ChatNotFoundException::class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    fun onChatNotFoundException(
+        e: ChatNotFoundException
+    ) = mapOf(
+        "code" to "NOT_FOUND",
         "message" to e.message
     )
 }

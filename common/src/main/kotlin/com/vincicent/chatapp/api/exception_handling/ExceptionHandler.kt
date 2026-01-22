@@ -1,5 +1,6 @@
 package com.vincicent.chatapp.api.exception_handling
 
+import com.vincicent.chatapp.domain.exception.ForbiddenException
 import com.vincicent.chatapp.domain.exception.UnauthorizedException
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -17,6 +18,15 @@ class ExceptionHandler {
         e: UnauthorizedException
     ) = mapOf(
         "code" to "UNAUTHORIZED",
+        "message" to e.message
+    )
+
+    @ExceptionHandler(ForbiddenException::class)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    fun onForbiddenException(
+        e: ForbiddenException
+    ) = mapOf(
+        "code" to "FORBIDDEN",
         "message" to e.message
     )
 

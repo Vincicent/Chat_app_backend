@@ -4,6 +4,7 @@ import com.vincicent.chatapp.domain.models.Chat
 import com.vincicent.chatapp.domain.models.ChatMessage
 import com.vincicent.chatapp.domain.models.ChatParticipant
 import com.vincicent.chatapp.infra.database.entities.ChatEntity
+import com.vincicent.chatapp.infra.database.entities.ChatMessageEntity
 import com.vincicent.chatapp.infra.database.entities.ChatParticipantEntity
 
 fun ChatEntity.toChat(lastMessage: ChatMessage? = null): Chat {
@@ -34,5 +35,15 @@ fun ChatParticipant.toChatParticipantEntity(): ChatParticipantEntity {
         username = username,
         email = email,
         profilePictureUrl = profilePictureUrl
+    )
+}
+
+fun ChatMessageEntity.toChatMessage(): ChatMessage {
+    return ChatMessage(
+        id = id!!,
+        chatId = chatId,
+        sender = sender.toChatParticipant(),
+        content = content,
+        createdAt = createdAt
     )
 }
