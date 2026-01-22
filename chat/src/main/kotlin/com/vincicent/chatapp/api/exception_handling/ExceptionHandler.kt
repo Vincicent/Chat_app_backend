@@ -3,6 +3,7 @@ package com.vincicent.chatapp.api.exception_handling
 import com.vincicent.chatapp.domain.exception.ChatNotFoundException
 import com.vincicent.chatapp.domain.exception.ChatParticipantNotFoundException
 import com.vincicent.chatapp.domain.exception.InvalidChatSizeException
+import com.vincicent.chatapp.domain.exception.MessageNotFoundException
 import com.vincicent.chatapp.domain.exception.UnauthorizedException
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -18,6 +19,15 @@ class ExceptionHandler {
     @ResponseStatus(HttpStatus.NOT_FOUND)
     fun onChatParticipantNotFoundException(
         e: ChatParticipantNotFoundException
+    ) = mapOf(
+        "code" to "NOT_FOUND",
+        "message" to e.message
+    )
+
+    @ExceptionHandler(MessageNotFoundException::class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    fun onMessageNotFoundException(
+        e: MessageNotFoundException
     ) = mapOf(
         "code" to "NOT_FOUND",
         "message" to e.message
