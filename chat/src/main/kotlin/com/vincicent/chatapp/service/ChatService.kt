@@ -1,5 +1,7 @@
 package com.vincicent.chatapp.service
 
+import com.vincicent.chatapp.api.dto.ChatMessageDto
+import com.vincicent.chatapp.api.mappers.toChatMessageDto
 import com.vincicent.chatapp.domain.exception.ChatNotFoundException
 import com.vincicent.chatapp.domain.exception.ChatParticipantNotFoundException
 import com.vincicent.chatapp.domain.exception.ForbiddenException
@@ -14,9 +16,11 @@ import com.vincicent.chatapp.infra.database.mappers.toChatMessage
 import com.vincicent.chatapp.infra.database.repositories.ChatMessageRepository
 import com.vincicent.chatapp.infra.database.repositories.ChatParticipantRepository
 import com.vincicent.chatapp.infra.database.repositories.ChatRepository
+import org.springframework.data.domain.PageRequest
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import java.time.Instant
 
 @Service
 class ChatService(
@@ -24,6 +28,21 @@ class ChatService(
     private val chatParticipantRepository: ChatParticipantRepository,
     private val chatMessageRepository: ChatMessageRepository,
 ) {
+    fun getChatMessages(
+        chatId: ChatId,
+        before: Instant?,
+        pageSize: Int
+    ): List<ChatMessageDto> {
+        return chatMessageRepository
+            .findByChatIdBefore(
+                chatId = chatId,
+                before = before ?: Instant.now(),
+                pageable = PageRequest.of(0, pageSize)
+            )
+            .content
+            .asReversed()
+            .map { it.toChatMessage().toChatMessageDto() }
+    }
 
     @Transactional
     fun createChat(
