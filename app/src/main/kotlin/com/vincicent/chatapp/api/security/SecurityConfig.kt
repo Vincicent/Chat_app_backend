@@ -1,4 +1,4 @@
-package com.vincicent.chatapp.security
+package com.vincicent.chatapp.api.security
 
 import com.vincicent.chatapp.api.config.JwtAuthFilter
 import jakarta.servlet.DispatcherType

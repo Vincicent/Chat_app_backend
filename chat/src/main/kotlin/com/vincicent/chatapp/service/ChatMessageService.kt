@@ -16,6 +16,7 @@ import com.vincicent.chatapp.infra.database.repositories.ChatMessageRepository
 import com.vincicent.chatapp.infra.database.repositories.ChatParticipantRepository
 import com.vincicent.chatapp.infra.database.repositories.ChatRepository
 import com.vincicent.chatapp.infra.message_queue.EventPublisher
+import org.springframework.cache.annotation.CacheEvict
 import org.springframework.context.ApplicationEventPublisher
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
@@ -30,6 +31,10 @@ class ChatMessageService(
     private val eventPublisher: EventPublisher
 ) {
     @Transactional
+    @CacheEvict(
+        value = ["messages"],
+        key = "#chatId",
+    )
     fun sendMessage(
         chatId: ChatId,
         senderId: UserId,
@@ -84,5 +89,15 @@ class ChatMessageService(
                 messageId = messageId
             )
         )
+
+        evictMessagesCache(message.chatId)
+    }
+
+    @CacheEvict(
+        value = ["messages"],
+        key = "#chatId",
+    )
+    fun evictMessagesCache(chatId: ChatId) {
+        // NO-OP: Let Spring handle the cache evict
     }
 }
