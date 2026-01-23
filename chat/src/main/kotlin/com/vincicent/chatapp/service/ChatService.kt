@@ -2,6 +2,8 @@ package com.vincicent.chatapp.service
 
 import com.vincicent.chatapp.api.dto.ChatMessageDto
 import com.vincicent.chatapp.api.mappers.toChatMessageDto
+import com.vincicent.chatapp.domain.events.ChatParticipantLeftEvent
+import com.vincicent.chatapp.domain.events.ChatParticipantsJoinedEvent
 import com.vincicent.chatapp.domain.exception.ChatNotFoundException
 import com.vincicent.chatapp.domain.exception.ChatParticipantNotFoundException
 import com.vincicent.chatapp.domain.exception.ForbiddenException
@@ -16,6 +18,7 @@ import com.vincicent.chatapp.infra.database.mappers.toChatMessage
 import com.vincicent.chatapp.infra.database.repositories.ChatMessageRepository
 import com.vincicent.chatapp.infra.database.repositories.ChatParticipantRepository
 import com.vincicent.chatapp.infra.database.repositories.ChatRepository
+import org.springframework.context.ApplicationEventPublisher
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
@@ -27,6 +30,7 @@ class ChatService(
     private val chatRepository: ChatRepository,
     private val chatParticipantRepository: ChatParticipantRepository,
     private val chatMessageRepository: ChatMessageRepository,
+    private val applicationEventPublisher: ApplicationEventPublisher,
 ) {
     fun getChatMessages(
         chatId: ChatId,
@@ -97,6 +101,13 @@ class ChatService(
             }
         ).toChat(lastMessage)
 
+        applicationEventPublisher.publishEvent(
+            ChatParticipantsJoinedEvent(
+                chatId = chatId,
+                userIds = userIds
+            )
+        )
+
         return updatedChat
     }
 
@@ -120,6 +131,13 @@ class ChatService(
             chat.apply {
                 this.participants = chat.participants - participant
             }
+        )
+
+        applicationEventPublisher.publishEvent(
+            ChatParticipantLeftEvent(
+                chatId = chatId,
+                userId = userId
+            )
         )
     }
 
