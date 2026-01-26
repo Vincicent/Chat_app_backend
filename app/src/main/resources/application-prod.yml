@@ -15,7 +15,9 @@ nginx:
 
 chatapp:
   email:
-    url: "http://TODO:8080"
+    url: "https://chatapp.com"
   rate-limit:
     ip:
       apply-limit: true
+  web-socket:
+    allowed-origin: "https://chatapp.com"
