@@ -21,6 +21,10 @@ dependencies {
     implementation(libs.spring.boot.starter.security)
 
 	testImplementation(kotlin("test"))
+
+    implementation(libs.jwt.api)
+    implementation(libs.jwt.impl)
+    implementation(libs.jwt.jackson)
 }
 
 tasks.test {

@@ -1,6 +1,7 @@
 package com.vincicent.chatapp.api.exception_handling
 
 import com.vincicent.chatapp.domain.exception.ForbiddenException
+import com.vincicent.chatapp.domain.exception.InvalidTokenException
 import com.vincicent.chatapp.domain.exception.UnauthorizedException
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -27,6 +28,16 @@ class ExceptionHandler {
         e: ForbiddenException
     ) = mapOf(
         "code" to "FORBIDDEN",
+        "message" to e.message
+    )
+
+
+    @ExceptionHandler(InvalidTokenException::class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    fun onInvalidToken(
+        e: InvalidTokenException
+    ) = mapOf(
+        "code" to "INVALID_TOKEN",
         "message" to e.message
     )
 
