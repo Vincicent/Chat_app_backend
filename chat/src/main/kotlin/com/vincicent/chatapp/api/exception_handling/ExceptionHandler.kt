@@ -3,7 +3,9 @@ package com.vincicent.chatapp.api.exception_handling
 import com.vincicent.chatapp.domain.exception.ChatNotFoundException
 import com.vincicent.chatapp.domain.exception.ChatParticipantNotFoundException
 import com.vincicent.chatapp.domain.exception.InvalidChatSizeException
+import com.vincicent.chatapp.domain.exception.InvalidProfilePictureException
 import com.vincicent.chatapp.domain.exception.MessageNotFoundException
+import com.vincicent.chatapp.domain.exception.StorageException
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.ResponseStatus
@@ -31,6 +33,20 @@ class ExceptionHandler {
         e: InvalidChatSizeException
     ) = mapOf(
         "code" to "INVALID_CHAT_SIZE",
+        "message" to e.message
+    )
+
+    @ExceptionHandler(InvalidProfilePictureException::class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    fun onInvalidProfilePicture(e: InvalidProfilePictureException) = mapOf(
+        "code" to "INVALID_PROFILE_PICTURE",
+        "message" to e.message
+    )
+
+    @ExceptionHandler(StorageException::class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    fun onInvalidProfilePicture(e: StorageException) = mapOf(
+        "code" to "STORAGE_ERROR",
         "message" to e.message
     )
 }
