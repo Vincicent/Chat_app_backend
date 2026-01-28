@@ -25,7 +25,7 @@ class RedisConfig {
         val polymorphicTypeValidator = BasicPolymorphicTypeValidator.builder()
             .allowIfSubType("java.util.") // Allow Java lists
             .allowIfSubType("kotlin.collections.") // Kotlin collections
-            .allowIfSubType("com.plcoding.chirp.")
+            .allowIfSubType("com.vincicent.chatapp.")
             .build()
 
         val objectMapper = JsonMapper.builder()

@@ -46,7 +46,7 @@ class EmailService(
 
         sendHtmlEmail(
             to = email,
-            subject = "Verify your Chirp account",
+            subject = "Verify your Chatapp account",
             html = htmlContent
         )
     }
@@ -77,7 +77,7 @@ class EmailService(
 
         sendHtmlEmail(
             to = email,
-            subject = "Reset your Chirp password",
+            subject = "Reset your Chatapp password",
             html = htmlContent
         )
     }
