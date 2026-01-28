@@ -10,6 +10,7 @@ import com.vincicent.chatapp.api.dto.ws.OutgoingWebSocketMessageType
 import com.vincicent.chatapp.api.dto.ws.ProfilePictureUpdateDto
 import com.vincicent.chatapp.api.dto.ws.SendMessageDto
 import com.vincicent.chatapp.api.mappers.toChatMessageDto
+import com.vincicent.chatapp.domain.events.ChatCreatedEvent
 import com.vincicent.chatapp.domain.events.ChatParticipantLeftEvent
 import com.vincicent.chatapp.domain.events.ChatParticipantsJoinedEvent
 import com.vincicent.chatapp.domain.events.MessageDeletedEvent
@@ -147,7 +148,7 @@ class ChatWebSocketHandler(
                 message.payload,
                 IncomingWebSocketMessage::class.java
             )
-            when(webSocketMessage.type) {
+            when (webSocketMessage.type) {
                 IncomingWebSocketMessageType.NEW_MESSAGE -> {
                     val dto = objectMapper.readValue(
                         webSocketMessage.payload,
@@ -159,7 +160,7 @@ class ChatWebSocketHandler(
                     )
                 }
             }
-        } catch(e: JacksonException) {
+        } catch (e: JacksonException) {
             logger.warn("Could not parse message ${message.payload}", e)
             sendError(
                 session = userSession.session,
@@ -191,9 +192,9 @@ class ChatWebSocketHandler(
 
         sessionsSnapshot.forEach { (sessionId, userSession) ->
             try {
-                if(userSession.session.isOpen) {
+                if (userSession.session.isOpen) {
                     val lastPong = userSession.lastPongTimestamp
-                    if(currentTime - lastPong > PONG_TIMEOUT_MS) {
+                    if (currentTime - lastPong > PONG_TIMEOUT_MS) {
                         logger.warn("Session $sessionId has timed out, closing connection.")
                         sessionsToClose.add(sessionId)
                         return@forEach
@@ -202,7 +203,7 @@ class ChatWebSocketHandler(
                     userSession.session.sendMessage(PingMessage())
                     logger.debug("Sent ping to {}", userSession.userId)
                 }
-            } catch(e: Exception) {
+            } catch (e: Exception) {
                 logger.error("Could not ping session $sessionId", e)
                 sessionsToClose.add(sessionId)
             }
@@ -213,7 +214,7 @@ class ChatWebSocketHandler(
                 sessions[sessionId]?.session?.let { session ->
                     try {
                         session.close(CloseStatus.GOING_AWAY.withReason("Ping timeout"))
-                    } catch(e: Exception) {
+                    } catch (e: Exception) {
                         logger.error("Couldn't close sessions for session ${session.id}")
                     }
                 }
@@ -239,21 +240,10 @@ class ChatWebSocketHandler(
 
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     fun onJoinChat(event: ChatParticipantsJoinedEvent) {
-        connectionLock.write {
-            event.userIds.forEach { userId ->
-                userChatIds.compute(userId) { _, chatIds ->
-                    (chatIds ?: mutableSetOf()).apply {
-                        add(event.chatId)
-                    }
-                }
-
-                userToSessions[userId]?.forEach { sessionId ->
-                    chatToSessions.compute(event.chatId) { _, sessions ->
-                        (sessions ?: mutableSetOf()).apply { add(sessionId) }
-                    }
-                }
-            }
-        }
+        updateChatForUsers(
+            chatId = event.chatId,
+            userIds = event.userIds.toList()
+        )
 
         broadcastToChat(
             chatId = event.chatId,
@@ -296,6 +286,35 @@ class ChatWebSocketHandler(
                     )
                 )
             )
+        )
+    }
+
+    private fun updateChatForUsers(
+        chatId: ChatId,
+        userIds: List<UserId>
+    ) {
+        connectionLock.write {
+            userIds.forEach { userId ->
+                userChatIds.compute(userId) { _, chatIds ->
+                    (chatIds ?: mutableSetOf()).apply {
+                        add(chatId)
+                    }
+                }
+
+                userToSessions[userId]?.forEach { sessionId ->
+                    chatToSessions.compute(chatId) { _, sessions ->
+                        (sessions ?: mutableSetOf()).apply { add(sessionId) }
+                    }
+                }
+            }
+        }
+    }
+
+    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
+    fun onChatCreated(event: ChatCreatedEvent) {
+        updateChatForUsers(
+            chatId = event.chatId,
+            userIds = event.participantIds
         )
     }
 

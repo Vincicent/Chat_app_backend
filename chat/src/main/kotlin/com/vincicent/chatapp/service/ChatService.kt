@@ -2,6 +2,7 @@ package com.vincicent.chatapp.service
 
 import com.vincicent.chatapp.api.dto.ChatMessageDto
 import com.vincicent.chatapp.api.mappers.toChatMessageDto
+import com.vincicent.chatapp.domain.events.ChatCreatedEvent
 import com.vincicent.chatapp.domain.events.ChatParticipantLeftEvent
 import com.vincicent.chatapp.domain.events.ChatParticipantsJoinedEvent
 import com.vincicent.chatapp.domain.exception.ChatNotFoundException
@@ -96,12 +97,19 @@ class ChatService(
         val creator = chatParticipantRepository.findByIdOrNull(creatorId)
             ?: throw ChatParticipantNotFoundException(creatorId)
 
-        return chatRepository.save(
+        return chatRepository.saveAndFlush(
             ChatEntity(
                 creator = creator,
                 participants = setOf(creator) + otherParticipants
             )
-        ).toChat(lastMessage = null)
+        ).toChat(lastMessage = null).also { entity ->
+            applicationEventPublisher.publishEvent(
+                ChatCreatedEvent(
+                    chatId = entity.id,
+                    participantIds = entity.participants.map { it.userId }
+                )
+            )
+        }
     }
 
     @Transactional
