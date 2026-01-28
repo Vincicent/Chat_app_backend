@@ -1,7 +1,10 @@
 package com.vincicent.chatapp.api.controllers
 
 import com.vincicent.chatapp.api.dto.ChatParticipantDto
+import com.vincicent.chatapp.api.dto.ConfirmProfilePictureRequest
+import com.vincicent.chatapp.api.dto.PictureUploadResponse
 import com.vincicent.chatapp.api.mappers.toChatParticipantDto
+import com.vincicent.chatapp.api.mappers.toResponse
 import com.vincicent.chatapp.api.util.requestUserId
 import com.vincicent.chatapp.service.ChatParticipantService
 import com.vincicent.chatapp.service.ProfilePictureService
