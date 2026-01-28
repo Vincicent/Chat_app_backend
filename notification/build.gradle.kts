@@ -20,8 +20,11 @@ dependencies {
     implementation(libs.spring.boot.starter.amqp)
     implementation(libs.spring.boot.starter.mail)
     implementation(libs.spring.boot.starter.thymeleaf)
+    implementation(libs.spring.boot.starter.data.jpa)
 
     implementation(libs.firebase.admin.sdk)
+
+    runtimeOnly(libs.postgresql)
 
     testImplementation(kotlin("test"))
 }
